@@ -15,21 +15,25 @@ import {
 import Background from "../../assets/images/restaurant_bg.png";
 import { HeroBg, ImageBg } from "../HeroSection/HeroElements";
 import Axios from "axios";
-const API = process.env.REACT_APP_API_URL || "http://localhost:3001";
+const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const SignUp = () => {
   const [usernameReg, setUsernameReg] = useState("");
   const [passwordReg, setPasswordReg] = useState("");
+  const [status, setStatus] = useState("");
 
-  const register = () => {
+  const register = (event) => {
+    event.preventDefault();
     Axios.post(`${API}/register`, {
       username: usernameReg,
       password: passwordReg,
     }).then((response) => {
       // handle success/failure
       if (response.data && response.data.success) {
-        // optional: redirect or show success message
+        setStatus("Account created. You can sign in now.");
       }
+    }).catch((error) => {
+      setStatus(error.response?.data?.error || "Unable to create the account.");
     });
   };
 
@@ -42,7 +46,7 @@ const SignUp = () => {
         <FormWrap>
           <Icon to="/">MealMuse</Icon>
           <FormContent>
-            <Form action="#">
+            <Form onSubmit={register}>
               <FormH1>Create your account</FormH1>
               <FormLabel htmlFor="for">Email</FormLabel>
               <FormInput
@@ -62,9 +66,10 @@ const SignUp = () => {
               />
               {/* <FormLabel htmlFor='for'>Confirm Password</FormLabel>
                             <FormInput type='password' required/> */}
-              <FormButton onClick={register} type="submit">
+              <FormButton type="submit">
                 Continue
               </FormButton>
+              {status && <Text>{status}</Text>}
               <Text>
                 Already have an Account?
                 <SigninLink id="Links-signin" to="/signin">

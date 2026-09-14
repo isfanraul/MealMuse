@@ -15,7 +15,7 @@ import { Button } from "../ButtonElement";
 import Background from '../../assets/images/restaurant_bg.png'
 import { HeroBg, ImageBg } from "../HeroSection/HeroElements";
 import Axios from "axios";
-const API = process.env.REACT_APP_API_URL || "http://localhost:3001";
+const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const SignIn = () => {
     const [SignInStatus, setSignInStatus] = useState("");
@@ -29,13 +29,14 @@ const SignIn = () => {
     useEffect(() => {
         Axios.get(`${API}/login`).then((response) => {
             if(response.data.loggedIn == true){
-                setSignInStatus(response.data.user[0].username);
+                setSignInStatus(response.data.user.username);
                 setRedirect("true");
             }
-        });
+        }).catch(() => setSignInStatus("The service is unavailable. Please try again."));
     }, [])
 
-    const login = () => {
+    const login = (event) => {
+        event.preventDefault();
         Axios.post(`${API}/login`, {
             username: username,
             password: password,
@@ -43,8 +44,11 @@ const SignIn = () => {
             if (response.data.message) {
                 setSignInStatus(response.data.message);
             } else {
-                setSignInStatus(response.data[0].username);
+                setSignInStatus(response.data.username);
+                setRedirect("true");
             }
+        }).catch((error) => {
+            setSignInStatus(error.response?.data?.error || error.response?.data?.message || "Unable to sign in.");
         });
     };
 
@@ -59,7 +63,7 @@ const SignIn = () => {
                     <Icon to="/">MealMuse</Icon>
                     <FormContent>
                         {Redirect== "false"&&
-                        <Form action="#">
+                            <Form onSubmit={login}>
                             <FormH1>Sign in to your account</FormH1>
                             <FormLabel htmlFor="for">Email</FormLabel>
                             <FormInput
@@ -77,7 +81,7 @@ const SignIn = () => {
                                     setPassword(e.target.value);
                                 }}
                             />
-                            <FormButton onClick={login} type="submit">
+                            <FormButton type="submit">
                                 Continue
                             </FormButton>
                             {Redirect== "true" &&
