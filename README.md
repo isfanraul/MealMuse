@@ -15,8 +15,6 @@ MealMuse is a restaurant discovery app that turns food preferences, dietary choi
 - Health endpoint for deployment monitoring
 - Responsive visual restaurant experience with reusable components
 
-The existing quiz and result routes are preserved. The 2026 update modernizes the build tooling and API foundation without removing those flows.
-
 ## Stack
 
 ### Client
