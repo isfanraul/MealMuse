@@ -1,0 +1,12 @@
+node_modules/
+.env
+.DS_Store
+/client/node_modules/
+/server/node_modules/
+/client/build/
+.idea/
+npm-debug.log
+yarn-error.log
+dist/
+*.iml
+.vscode/
